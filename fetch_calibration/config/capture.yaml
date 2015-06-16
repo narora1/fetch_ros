@@ -49,6 +49,6 @@ finders:
     topic: /head_camera/depth_registered/points
     ground_frame: base_link
   - name: checkerboard_finder
-    topic: /head_camera/depth_registered/image
+    topic: /head_camera/depth_registered/points
     checker_frame: checkerboard
 
