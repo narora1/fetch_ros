@@ -47,4 +47,8 @@ finders:
         z: 0.0396
   - name: ground_plane_finder
     topic: /head_camera/depth_registered/points
-    ground-frame: base_link
+    ground_frame: base_link
+  - name: checkerboard_finder
+    topic: /head_camera/depth_registered/image
+    checker_frame: checkerboard
+
