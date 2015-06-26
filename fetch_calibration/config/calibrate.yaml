@@ -1,5 +1,5 @@
 verbose: true
-base_link: torso_lift_link
+base_link: base_link
 models:
  - name: arm
    type: chain
@@ -50,9 +50,13 @@ error_blocks:
    type: camera3d_to_arm
    camera: camera
    arm: arm
+ - name: ground_plane
+   type: camera3d_to_ground
+   camera: camera
  - name: restrict_camera
    type: outrageous
    param: head_camera_rgb_joint
    joint_scale: 0.0
    position_scale: 0.1
    rotation_scale: 0.1
+
