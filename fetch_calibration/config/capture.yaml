@@ -16,8 +16,9 @@ chains:
      - head_pan_joint
      - head_tilt_joint
 duration: 2.0
-finders:
-  - name: led_finder
+features:
+  led_finder:
+    type: robot_calibration/LedFinder
     action: /gripper_controller/led_action
     topic: /head_camera/depth_registered/points
     threshold: 500.0
@@ -45,10 +46,11 @@ finders:
         x: 0.1044
         y: -0.0355
         z: 0.0396
-  - name: ground_plane_finder
+  ground_plane_finder:
+    type: robot_calibration/GroundPlaneFinder
     topic: /head_camera/depth_registered/points
     ground_frame: base_link
-  - name: checkerboard_finder
+  checkerboard_finder:
+    type: robot_calibration/CheckerboardFinder
     topic: /head_camera/depth_registered/points
     checker_frame: checkerboard
-
