@@ -2,6 +2,14 @@
 Changelog for package fetch_calibration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.0 (2015-06-23)
+------------------
+* update capture for new multi_sensor branch of calibration
+* Contributors: Michael Ferguson
+
+0.5.14 (2015-06-19)
+-------------------
+
 0.5.13 (2015-06-13)
 -------------------
 

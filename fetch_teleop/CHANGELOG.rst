@@ -2,6 +2,18 @@
 Changelog for package fetch_teleop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.0 (2015-06-23)
+------------------
+* install tuck_arm.py
+* add a keepout zone for extra margin around base
+* add ability to run tuck arm script without joystick
+* Contributors: Michael Ferguson
+
+0.5.14 (2015-06-19)
+-------------------
+* add script to tuck arm
+* Contributors: Michael Ferguson
+
 0.5.13 (2015-06-13)
 -------------------
 
