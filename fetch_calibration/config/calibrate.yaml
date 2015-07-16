@@ -23,6 +23,11 @@ free_params:
  - camera_cy
  - camera_z_offset
  - camera_z_scaling
+ - camera_distort_1
+ - camera_distort_2
+ - camera_distort_3
+ - camera_distort_4
+ - camera_distort_5
 free_frames:
  - name: head_camera_rgb_joint
    x: true
@@ -40,11 +45,11 @@ free_frames:
    yaw: true
  - name: checkerboard
    x: true
-   y: true
+   y: false 
    z: true
    roll: false
    pitch: true
-   yaw: true
+   yaw: false
 error_blocks:
  - name: hand_eye
    type: camera3d_to_arm
@@ -53,6 +58,7 @@ error_blocks:
  - name: ground_plane
    type: camera3d_to_ground
    camera: camera
+   ground: ground
  - name: restrict_camera
    type: outrageous
    param: head_camera_rgb_joint

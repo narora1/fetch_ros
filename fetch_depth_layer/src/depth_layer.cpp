@@ -65,7 +65,7 @@ void FetchDepthLayer::onInitialize()
 
   private_nh.param("publish_observations", publish_observations_, false);
   private_nh.param("ground_orientation_threshold", ground_threshold_, 0.9);
-  private_nh.param("observations_separation_threshold", observations_threshold_, 0.06);
+  private_nh.param("observations_separation_threshold", observations_threshold_, 0.03);
 
   if (publish_observations_)
   {
@@ -93,7 +93,8 @@ void FetchDepthLayer::cameraInfoCallback(
   // Lock mutex before updating K
   boost::unique_lock<boost::mutex> lock(mutex_K_);
 
-  float focal_pixels_ = msg->P[0];
+  float focal_pixels_x_ = msg->P[0];
+  float focal_pixels_y_ = msg->P[5];	
   float center_x_ = msg->P[2];
   float center_y_ = msg->P[6];
 
@@ -102,15 +103,15 @@ void FetchDepthLayer::cameraInfoCallback(
     if (msg->binning_x > 0)
     {
       K_ = (cv::Mat_<double>(3, 3) <<
-        focal_pixels_/msg->binning_x, 0.0, center_x_/msg->binning_x,
-        0.0, focal_pixels_/msg->binning_x, center_y_/msg->binning_x,
+        focal_pixels_x_/msg->binning_x, 0.0, center_x_/msg->binning_x,
+        0.0, focal_pixels_y_/msg->binning_x, center_y_/msg->binning_x,
         0.0, 0.0, 1.0);
     }
     else
     {
       K_ = (cv::Mat_<double>(3, 3) <<
-        focal_pixels_, 0.0, center_x_,
-        0.0, focal_pixels_, center_y_,
+        focal_pixels_x_, 0.0, center_x_,
+        0.0, focal_pixels_y_, center_y_,
         0.0, 0.0, 1.0);
     }
   }
@@ -163,9 +164,9 @@ void FetchDepthLayer::depthImageCallback(
   {
     plane_estimator_ = cv::Algorithm::create<cv::RgbdPlane>("RGBD.RgbdPlane");
     // Model parameters are based on notes in opencv_candidate
-    plane_estimator_->set("sensor_error_a", 0.0075);
-    plane_estimator_->set("sensor_error_b", 0.0);
-    plane_estimator_->set("sensor_error_c", 0.0);
+    plane_estimator_->set("sensor_error_a", 0.0085);
+    plane_estimator_->set("sensor_error_b", 0.0035);
+    plane_estimator_->set("sensor_error_c", 0.0003);
     // Image/cloud height/width must be multiple of block size
     plane_estimator_->set("block_size", 40);
     // Distance a point can be from plane and still be part of it
