@@ -23,7 +23,6 @@ free_params:
  - camera_cy
  - camera_z_offset
  - camera_z_scaling
- - camera_distort_1
 free_frames:
  - name: head_camera_rgb_joint
    x: true
