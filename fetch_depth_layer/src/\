@@ -104,7 +104,7 @@ distortionYaml.close();
 //for(size_t i=0; i< weight.size(); i=i+4)
 //{
 multiplier = weight;
-/*int k=0;
+int k=0;
 double total;
 for (size_t i=0;i<multiplier.size();i++)
 { 
@@ -115,16 +115,16 @@ if(multiplier[i] != 1.1)
 }
 }
   double avg = total/k;
-*/
- /* 
+
+  
 for (size_t i=0;i<multiplier.size();i++)
 {        
-if(multiplier[i] = 1.1)
+if(multiplier[i] != 1.1)
 {
-  multiplier[i] = 0.95;
+  multiplier[i] = avg;
 }
 }
-*/
+
  /*   YAML::Node doc = YAML::LoadFile("/home/narora/catkin_ws/distortion.yaml");
 
 //parser.GetNextDocument(doc);
@@ -198,13 +198,8 @@ void FetchDepthLayer::depthImageCallback(
     return;
   }
 
-cv::Mat dst;
-//cv::blur(cv_ptr->image, dst, cv::Size(3,3));
-//std::cout<<dst<<std::endl;
+  cv::boxFilter(cv_ptr->image, cv_ptr->image, -1,cv::Size(3,3), cv::Point(-1,-1),true);
 
-
-  //cv::boxFilter(cv_ptr->image, dst, -1,cv::Size(3,3), cv::Point(-1,-1),true);
-//cv_ptr->image = dst;
   // Convert to 3d
   cv::Mat points3d;
   cv::depthTo3d(cv_ptr->image, K_, points3d);
@@ -250,9 +245,8 @@ cv::Mat dst;
  //int total = points3d.rows * points3d.cols ;
 
  // std::cout<<"total"<<total<<std::endl;
-//cv::blur(points3d, dst, cv::Size(3,3));
-//points3d=dst;
-//std::cout<<points3d.cols<<std::endl;
+//cv::boxFilter(points3d, dst, -1,cv::Size(3,3), cv::Point(-1,-1),true);
+points3d=dst;
 //std::cout<<"hi"<<std::endl;
   // Get normals
   if (normals_estimator_.empty())
@@ -310,9 +304,7 @@ cv::Mat dst;
 
  // cv::Mat channels[3];
   cv::split(points3d, channels);
- 
-  //cv::boxFilter(points3d, points3d,-1, cv::Size(3,3),cv::Point(-1,-1),true);
-  
+
   sensor_msgs::PointCloud clearing_points;
   clearing_points.header.stamp = msg->header.stamp;
   clearing_points.header.frame_id = msg->header.frame_id;
@@ -389,63 +381,18 @@ cv::Mat dst;
             }  // for y
           }  // for x
           if (num_valid >= 7)
-          { 
-            int outliers=0;
-            for (size_t row=i-1;row<i+2; row++)
-            {
-              for(size_t col=j-1; col<j+2;col++)
-              {             
-                geometry_msgs::Point32 outlier_test_pt;
-
-                outlier_test_pt.x = channels[0].at<float>(row, col);
-                outlier_test_pt.y = channels[1].at<float>(row, col);
-                outlier_test_pt.z = channels[2].at<float>(row, col);
+          {
+            /*for(x=-2; x<3;x++)
+            {  
+              for(y= -2; y<3;y++)
+              {
                 
-             if ((abs(ground_plane[0] * outlier_test_pt.x +
-                 ground_plane[1] * outlier_test_pt.y +
-                 ground_plane[2] * outlier_test_pt.z +
-                 ground_plane[3]) <= observations_threshold_))
-
-             { continue;}
-             else
-             {
-                std::cout<<"hi"<<std::endl;
-                int neighbours=0;
-                for(int x=-1; x<2;x++)
-                {  
-                  for(int y= -1; y<2;y++)
-                  {  
-                    geometry_msgs::Point32 test_pt;
-                    test_pt.x = channels[0].at<float>(row+x, col+y);
-                    test_pt.y = channels[1].at<float>(row+x, col+y);
-                    test_pt.z = channels[2].at<float>(row+x, col+y);
-                
-                    if (test_pt.x != 0.0 &&
-                        test_pt.y != 0.0 &&
-                        test_pt.z != 0.0 &&
-                        !isnan(test_pt.x) &&
-                        !isnan(test_pt.y) &&
-                        !isnan(test_pt.z))
-                    {
-               //     if ( fabs(test_pt.x - outlier_test_pt.x) < 0.1 &&
-                 //        fabs(test_pt.y - outlier_test_pt.y) < 0.1 &&
-                   //      fabs(test_pt.z - outlier_test_pt.z) < 0.1)
-                        {
-                        neighbours++;
-                        }
-           
-                    }  
-                  }          // for y
-                }  // for x
-                if (neighbours>=7)
-                { 
-                  outliers++;
-                }  
+ 
               }
             }
-          }      
-            if (outliers >=1)    
-            {marking_points.points.push_back(current_point);}
+              */  
+
+            marking_points.points.push_back(current_point);
             //int index = j* points3d.rows*16 +4*i;
             //std::cout<<"multi:"<<multiplier[index]<<std::endl;
           }
@@ -453,7 +400,43 @@ cv::Mat dst;
       }
     }
   }
-   
+
+ /* bool outlier( geometry_msgs::Point32 point) 
+  {
+    //geometry_msgs::Point32 test_point;
+    int valid = 0;
+          for (int x=-1; x < 2; x++)
+          {
+            for (int y=-1; y < 2; y++)
+            {
+              if (x == 0 && y == 0)
+                continue;
+              geometry_msgs::Point32 test_point;
+              test_point.x = channels[0].at<float>(i+x, j+y);
+              test_point.y = channels[1].at<float>(i+x, j+y);
+              test_point.z = channels[2].at<float>(i+x, j+y);
+              if (test_point.x != 0.0 &&
+                  test_point.y != 0.0 &&
+                  test_point.z != 0.0 &&
+                  !isnan(test_point.x) &&
+                  !isnan(test_point.y) &&
+                  !isnan(test_point.z))
+              {
+                if ( fabs(test_point.x - current_point.x) < 0.1 &&
+                     fabs(test_point.y - current_point.y) < 0.1 &&
+                     fabs(test_point.z - current_point.z) < 0.1)
+                {
+                  num_valid++;
+                }
+              }
+            }  // for y
+          }  // for x
+ if (valid>=7)
+{return 1; }
+return 0;
+  }*/
+
+
   if (clearing_points.points.size() > 0)
   {
     if (publish_observations_)
@@ -491,18 +474,7 @@ cv::Mat dst;
     marking_buf_->lock();
     marking_buf_->bufferCloud(marking_cloud2);
     marking_buf_->unlock();
-
-  
-
-   
   }
 }
-
-//bool FetchDepthLayer::outlier_test(const geometry_msgs::Point32 test_pt)
-//{ 
-//for (size_t i =0; i<points3d.rows;i++)
-//{}
-//return(1);
-
 
 }  // namespace costmap_2d
