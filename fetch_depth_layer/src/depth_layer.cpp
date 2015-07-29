@@ -46,7 +46,7 @@ void FetchDepthLayer::onInitialize()
   double min_obstacle_height = 0.0;
   double max_obstacle_height = 2.0;
   double transform_tolerance = 0.5;
-  double obstacle_range = 2.5;
+  double obstacle_range = 2.0;
   double raytrace_range = 3.0;
   std::string topic = "";
   std::string sensor_frame = "";
@@ -332,7 +332,7 @@ cv::Mat dst;
   // Put points in clearing/marking clouds
   for (size_t i=skip; i<points3d.rows-skip; i++)
   {
-    for (size_t j=skip; j<points3d.cols-skip; j++)
+    for (size_t j=2*skip; j<points3d.cols-2*skip; j++)
     {
       // Get next point
       geometry_msgs::Point32 current_point;
@@ -341,9 +341,9 @@ cv::Mat dst;
       current_point.z = channels[2].at<float>(i, j);
       // Check point validity
         //  clearing_points.points.push_back(current_point);
-    
 
-  if (current_point.x != 0.0 &&
+
+      if (current_point.x != 0.0 &&
           current_point.y != 0.0 &&
           current_point.z != 0.0 &&
           !isnan(current_point.x) &&
@@ -361,7 +361,7 @@ cv::Mat dst;
         else
         {
           // Not inlier, should it be outlier?
-          int num_valid = 0;
+          int num_valid = 0, num_outliers = 0;
           for (int x=-1; x < 2; x++)
           {
             for (int y=-1; y < 2; y++)
@@ -384,13 +384,22 @@ cv::Mat dst;
                      fabs(test_point.z - current_point.z) < 0.1)
                 {
                   num_valid++;
+                  if ((fabs(ground_plane[0] * test_point.x +
+                            ground_plane[1] * test_point.y +
+                            ground_plane[2] * test_point.z +
+                            ground_plane[3]) > observations_threshold_))
+                  {
+                    num_outliers++;
+                  }
                 }
               }
             }  // for y
           }  // for x
-          if (num_valid >= 7)
-          { 
-            int outliers=0;
+          if (num_valid >= 7 && num_outliers >= 7)
+          {
+            marking_points.points.push_back(current_point);
+
+            /*int outliers=0;
             for (size_t row=i-1;row<i+2; row++)
             {
               for(size_t col=j-1; col<j+2;col++)
@@ -444,8 +453,8 @@ cv::Mat dst;
               }
             }
           }      
-            if (outliers >=1)    
-            {marking_points.points.push_back(current_point);}
+            if (outliers >=1)   */ 
+//            {marking_points.points.push_back(current_point);}
             //int index = j* points3d.rows*16 +4*i;
             //std::cout<<"multi:"<<multiplier[index]<<std::endl;
           }
