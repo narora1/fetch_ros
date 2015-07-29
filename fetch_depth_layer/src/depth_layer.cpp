@@ -87,54 +87,20 @@ void FetchDepthLayer::onInitialize()
   depth_image_sub_ = private_nh.subscribe<sensor_msgs::Image>(
     "/head_camera/depth_downsample/image_raw",
     10, &FetchDepthLayer::depthImageCallback, this);
-double d;
-std::string yamlName = "/home/narora/catkin_ws/distortion.yaml" ; 
-std::ifstream distortionYaml;
-std::vector<double> weight;
-distortionYaml.open(yamlName.c_str());
-if(distortionYaml)
-{
- while (distortionYaml >> d)
-{
-weight.push_back(d);
-}
-distortionYaml.close();
-}
-//std::cout<<"w size"<<weight.size()<<std::endl;
-//for(size_t i=0; i< weight.size(); i=i+4)
-//{
-multiplier = weight;
-/*int k=0;
-double total;
-for (size_t i=0;i<multiplier.size();i++)
-{ 
-if(multiplier[i] != 1.1)
-{ 
-  total+= multiplier[i];
-  k++;
-}
-}
-  double avg = total/k;
-*/
- /* 
-for (size_t i=0;i<multiplier.size();i++)
-{        
-if(multiplier[i] = 1.1)
-{
-  multiplier[i] = 0.95;
-}
-}
-*/
- /*   YAML::Node doc = YAML::LoadFile("/home/narora/catkin_ws/distortion.yaml");
 
-//parser.GetNextDocument(doc);
-for(std::size_t i; i<doc.size();i=i+4) {
-    double scalar;
-   scalar =  doc[i].as<double>();// >> scalar;
-   
-    multiplier.push_back(scalar);
-    std::cout << "Found scalar: " << scalar << std::endl;
-}*/
+  double weight;
+
+  std::string yamlName = "/home/narora/catkin_ws/distortion.yaml" ; 
+  std::ifstream distortionYaml;
+  distortionYaml.open(yamlName.c_str());
+  if(distortionYaml)
+  {
+    while (distortionYaml >> weight)
+    {
+      multiplier.push_back(weight);
+    }
+    distortionYaml.close();
+  }
 }
 
 FetchDepthLayer::~FetchDepthLayer()
@@ -198,13 +164,6 @@ void FetchDepthLayer::depthImageCallback(
     return;
   }
 
-cv::Mat dst;
-//cv::blur(cv_ptr->image, dst, cv::Size(3,3));
-//std::cout<<dst<<std::endl;
-
-
-  //cv::boxFilter(cv_ptr->image, dst, -1,cv::Size(3,3), cv::Point(-1,-1),true);
-//cv_ptr->image = dst;
   // Convert to 3d
   cv::Mat points3d;
   cv::depthTo3d(cv_ptr->image, K_, points3d);
@@ -212,48 +171,27 @@ cv::Mat dst;
   cv::Mat channels[3];
   cv::split(points3d, channels);
 
-//cv::Mat channelss ;
-  //cv::Mat point3d;
   for (size_t i=0;i<points3d.rows;i++)
-        {
-        for (size_t j=0; j<points3d.cols ; j++)
-        {
-
-                geometry_msgs::Point32 current_point;
+  {
+    for (size_t j=0; j<points3d.cols ; j++)
+    {
+      geometry_msgs::Point32 current_point;
       current_point.x = channels[0].at<float>(i, j);
       current_point.y = channels[1].at<float>(i, j);
       current_point.z = channels[2].at<float>(i, j);
       int index = j* points3d.rows*16 +4*i;
-    //  std::cout<<multiplier.size()<<std::endl;
-               current_point.z = current_point.z * multiplier[index];
- //              
-                channels[2].at<float>(i,j) = current_point.z ;
-//
-        //      cv::merge(channelss, points3d);
-        //points3d.at<float>(i,j) = channelss ; 
+ 
+      current_point.z = current_point.z * multiplier[index];
+      channels[2].at<float>(i,j) = current_point.z ;
+    }
+  }
 
-}
-        }
-//cv::blur(channels[2], channels[2], cv::Size(3,3), cv::Point(-1,-1));
-
-    std::vector<cv::Mat> channelss;
- channelss.push_back(channels[0]);
-              channelss.push_back(channels[1]);
-              channelss.push_back(channels[2]);
-              cv::merge(channelss, points3d);
-        //points3d.at<float>(i,j) = channelss ; 
-
-//cv::Mat dst;
-//points3d = channelss ;
-
-//std::cout<<"hello"<<std::endl;
- //int total = points3d.rows * points3d.cols ;
-
- // std::cout<<"total"<<total<<std::endl;
-//cv::blur(points3d, dst, cv::Size(3,3));
-//points3d=dst;
-//std::cout<<points3d.cols<<std::endl;
-//std::cout<<"hi"<<std::endl;
+  std::vector<cv::Mat> channelss;
+  channelss.push_back(channels[0]);
+  channelss.push_back(channels[1]);
+  channelss.push_back(channels[2]);
+  cv::merge(channelss, points3d);
+ 
   // Get normals
   if (normals_estimator_.empty())
   {
@@ -283,7 +221,7 @@ cv::Mat dst;
   cv::Mat planes_mask;
   std::vector<cv::Vec4f> plane_coefficients;
   (*plane_estimator_)(points3d, normals, planes_mask, plane_coefficients);
-//std::cout<<"hi"<<std::endl;
+
   cv::Vec4f ground_plane;
   for (size_t i=0; i < plane_coefficients.size(); i++)
   {
@@ -296,23 +234,16 @@ cv::Mat dst;
       break;
     }
   }
-//std::cout<<"hi"<<std::endl;
-
-  // check that ground plane actually exists, so walls don't count as clearing observations
-/*  if (ground_plane[0] == 0.0 && ground_plane[1] == 0.0 &&
+  //Check that the ground plane actually exists, so walls don't count as clearing observations
+  if (ground_plane[0] == 0.0 && ground_plane[1] == 0.0 &&
       ground_plane[2] == 0.0 && ground_plane[3] == 0.0)
   {
     ROS_DEBUG_NAMED("depth_layer", "Invalid ground plane.");
     return;
   }
-*/
-//std::cout<<"hi"<<std::endl;
 
- // cv::Mat channels[3];
   cv::split(points3d, channels);
  
-  //cv::boxFilter(points3d, points3d,-1, cv::Size(3,3),cv::Point(-1,-1),true);
-  
   sensor_msgs::PointCloud clearing_points;
   clearing_points.header.stamp = msg->header.stamp;
   clearing_points.header.frame_id = msg->header.frame_id;
@@ -321,14 +252,9 @@ cv::Mat dst;
   marking_points.header.stamp = msg->header.stamp;
   marking_points.header.frame_id = msg->header.frame_id;
 
-//std::cout<<"hi"<<std::endl;
-
-
   // Points at edges of image can be very noisy, exclude them
   int skip = 10;  // TODO should be ROS param
-// total = points3d.rows * points3d.cols ;
 
-  //std::cout<<"total"<<total<<std::endl;
   // Put points in clearing/marking clouds
   for (size_t i=skip; i<points3d.rows-skip; i++)
   {
@@ -339,22 +265,31 @@ cv::Mat dst;
       current_point.x = channels[0].at<float>(i, j);
       current_point.y = channels[1].at<float>(i, j);
       current_point.z = channels[2].at<float>(i, j);
+      
       // Check point validity
-        //  clearing_points.points.push_back(current_point);
-
-
+      
       if (current_point.x != 0.0 &&
           current_point.y != 0.0 &&
           current_point.z != 0.0 &&
           !isnan(current_point.x) &&
           !isnan(current_point.y) &&
           !isnan(current_point.z))
-      {
+      { 
+        double threshold_;
+        if (i<25 || j<25 || i>95 || j>135)
+        {
+          threshold_ = observations_threshold_ + 0.01;
+        }
+        else
+        { 
+          threshold_ = observations_threshold_;
+        }   
+      
         // Check if point is part of the ground plane
         if (fabs(ground_plane[0] * current_point.x +
                  ground_plane[1] * current_point.y +
                  ground_plane[2] * current_point.z +
-                 ground_plane[3]) <= observations_threshold_)
+                 ground_plane[3]) <= threshold_)
         {
           clearing_points.points.push_back(current_point);
         }
@@ -387,7 +322,7 @@ cv::Mat dst;
                   if ((fabs(ground_plane[0] * test_point.x +
                             ground_plane[1] * test_point.y +
                             ground_plane[2] * test_point.z +
-                            ground_plane[3]) > observations_threshold_))
+                            ground_plane[3]) > threshold_))
                   {
                     num_outliers++;
                   }
@@ -398,65 +333,6 @@ cv::Mat dst;
           if (num_valid >= 7 && num_outliers >= 7)
           {
             marking_points.points.push_back(current_point);
-
-            /*int outliers=0;
-            for (size_t row=i-1;row<i+2; row++)
-            {
-              for(size_t col=j-1; col<j+2;col++)
-              {             
-                geometry_msgs::Point32 outlier_test_pt;
-
-                outlier_test_pt.x = channels[0].at<float>(row, col);
-                outlier_test_pt.y = channels[1].at<float>(row, col);
-                outlier_test_pt.z = channels[2].at<float>(row, col);
-                
-             if ((abs(ground_plane[0] * outlier_test_pt.x +
-                 ground_plane[1] * outlier_test_pt.y +
-                 ground_plane[2] * outlier_test_pt.z +
-                 ground_plane[3]) <= observations_threshold_))
-
-             { continue;}
-             else
-             {
-                std::cout<<"hi"<<std::endl;
-                int neighbours=0;
-                for(int x=-1; x<2;x++)
-                {  
-                  for(int y= -1; y<2;y++)
-                  {  
-                    geometry_msgs::Point32 test_pt;
-                    test_pt.x = channels[0].at<float>(row+x, col+y);
-                    test_pt.y = channels[1].at<float>(row+x, col+y);
-                    test_pt.z = channels[2].at<float>(row+x, col+y);
-                
-                    if (test_pt.x != 0.0 &&
-                        test_pt.y != 0.0 &&
-                        test_pt.z != 0.0 &&
-                        !isnan(test_pt.x) &&
-                        !isnan(test_pt.y) &&
-                        !isnan(test_pt.z))
-                    {
-               //     if ( fabs(test_pt.x - outlier_test_pt.x) < 0.1 &&
-                 //        fabs(test_pt.y - outlier_test_pt.y) < 0.1 &&
-                   //      fabs(test_pt.z - outlier_test_pt.z) < 0.1)
-                        {
-                        neighbours++;
-                        }
-           
-                    }  
-                  }          // for y
-                }  // for x
-                if (neighbours>=7)
-                { 
-                  outliers++;
-                }  
-              }
-            }
-          }      
-            if (outliers >=1)   */ 
-//            {marking_points.points.push_back(current_point);}
-            //int index = j* points3d.rows*16 +4*i;
-            //std::cout<<"multi:"<<multiplier[index]<<std::endl;
           }
         }
       }
@@ -500,18 +376,7 @@ cv::Mat dst;
     marking_buf_->lock();
     marking_buf_->bufferCloud(marking_cloud2);
     marking_buf_->unlock();
-
-  
-
-   
   }
 }
-
-//bool FetchDepthLayer::outlier_test(const geometry_msgs::Point32 test_pt)
-//{ 
-//for (size_t i =0; i<points3d.rows;i++)
-//{}
-//return(1);
-
 
 }  // namespace costmap_2d
