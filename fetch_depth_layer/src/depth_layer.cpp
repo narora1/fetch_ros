@@ -171,7 +171,7 @@ void FetchDepthLayer::depthImageCallback(
   cv::Mat channels[3];
   cv::split(points3d, channels);
 
-  for (size_t i=0;i<points3d.rows;i++)
+ /* for (size_t i=0;i<points3d.rows;i++)
   {
     for (size_t j=0; j<points3d.cols ; j++)
     {
@@ -184,7 +184,7 @@ void FetchDepthLayer::depthImageCallback(
       current_point.z = current_point.z * multiplier[index];
       channels[2].at<float>(i,j) = current_point.z ;
     }
-  }
+  } */
 
   std::vector<cv::Mat> channelss;
   channelss.push_back(channels[0]);
@@ -276,11 +276,11 @@ void FetchDepthLayer::depthImageCallback(
           !isnan(current_point.z))
       { 
         double threshold_;
-        if (i<25 || j<25 || i>95 || j>135)
-        {
-          threshold_ = observations_threshold_ + 0.01;
-        }
-        else
+//        if (i<25 || j<25 || i>95 || j>135)
+  //      {
+    //      threshold_ = observations_threshold_ + 0.01;
+      //  }
+       // else
         { 
           threshold_ = observations_threshold_;
         }   
