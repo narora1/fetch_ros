@@ -21,11 +21,6 @@
 
 #include <pluginlib/class_list_macros.h>
 #include <fetch_depth_layer/depth_layer.h>
-#include <fstream>
-#include "yaml-cpp/yaml.h"
-#include <iostream>
-#include <sstream>
-#include <string>
 #include <vector>
 
 PLUGINLIB_EXPORT_CLASS(costmap_2d::FetchDepthLayer, costmap_2d::Layer)
@@ -87,25 +82,6 @@ void FetchDepthLayer::onInitialize()
   depth_image_sub_ = private_nh.subscribe<sensor_msgs::Image>(
     "/head_camera/depth_downsample/image_raw",
     10, &FetchDepthLayer::depthImageCallback, this);
-
-  double weight;
-
-  std::string yamlName = "/etc/ros/indigo/distortion.yaml";
-  std::ifstream distortionYaml;
-  distortionYaml.open(yamlName.c_str());
-  if (distortionYaml)
-  {
-    while (distortionYaml >> weight)
-    {
-      multiplier.push_back(weight);
-    }
-    distortionYaml.close();
-    observations_threshold_ = 0.03;
-  }
-  else
-  {
-    std::cout<<"no file"<<std::endl;
-  }
 }
 
 FetchDepthLayer::~FetchDepthLayer()
@@ -152,18 +128,6 @@ void FetchDepthLayer::cameraInfoCallback(
 void FetchDepthLayer::depthImageCallback(
   const sensor_msgs::Image::ConstPtr& msg)
 {
-  if (multiplier.empty())
-  {
-    if (total_size == 0)
-    {
-      return;
-    }
-    for (size_t i = 0; i < total_size; i++)
-    {
-      multiplier.push_back(1.0);
-    }
-  }
-
   // Lock mutex before using K
   boost::unique_lock<boost::mutex> lock(mutex_K_);
 
@@ -190,27 +154,6 @@ void FetchDepthLayer::depthImageCallback(
 
   cv::Mat channels[3];
   cv::split(points3d, channels);
-
-  for (size_t i = 0; i < points3d.rows; i++)
-  {
-    for (size_t j = 0; j < points3d.cols ; j++)
-    {
-      geometry_msgs::Point32 current_point;
-      current_point.x = channels[0].at<float>(i, j);
-      current_point.y = channels[1].at<float>(i, j);
-      current_point.z = channels[2].at<float>(i, j);
-      int index = j * points3d.rows * 16 + 4 * i;
-
-      current_point.z = current_point.z * multiplier[index];
-      channels[2].at<float>(i, j) = current_point.z;
-    }
-  }
-
-  std::vector<cv::Mat> channelss;
-  channelss.push_back(channels[0]);
-  channelss.push_back(channels[1]);
-  channelss.push_back(channels[2]);
-  cv::merge(channelss, points3d);
 
   // Get normals
   if (normals_estimator_.empty())
@@ -252,7 +195,8 @@ void FetchDepthLayer::depthImageCallback(
   points_on_plane.push_back(point_on_plane_3);
   
   cv::Mat points_on_plane_transformed;
-  
+ 
+  tf::TransformListener listener; 
   tf::StampedTransform transform;
 
   try
@@ -265,8 +209,11 @@ void FetchDepthLayer::depthImageCallback(
       point.setY( points_on_plane.at<cv::Vec3f>(i,0)[1]); 
       point.setZ( points_on_plane.at<cv::Vec3f>(i,0)[2]);  
       tf::Stamped<tf::Point> point_transformed;
-     
-      listener.transformPoint("base_link", point , point_transformed);
+      //tf::TransformListener listener;   
+      listener.waitForTransform("/base_link", "/head_camera_depth_optical_frame",
+                              ros::Time(0), ros::Duration(3.0));
+
+      listener.transformPoint("/base_link", point , point_transformed);
       cv::Vec3f point_transform;
       point_transform[0] = point_transformed.x();
       point_transform[1] = point_transformed.y();
@@ -290,19 +237,17 @@ void FetchDepthLayer::depthImageCallback(
   float distance = sqrt (normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]);
   plane_transformed[0] = normal[0] / distance;
   plane_transformed[1] = normal[1] / distance;
-  plane_transformed[2] = normal[2] /distance;
-  plane_transformed[3] = - V0.dot(normal/distance);
+  plane_transformed[2] = normal[2] / distance;
+  plane_transformed[3] = - V0.dot(normal / distance);
 
-  double angle = acos (normal[2]/distance) * 180/M_PI;  
-  std::cout<<angle<<std::endl; 
-
+  double angle = acos(normal[2] / distance) * 180/M_PI;  
+  
   cv::Vec4f ground_plane;
   for (size_t i = 0; i < plane_coefficients.size(); i++)
   {
     // check plane orientation
-    if ((fabs(0.0 - plane_coefficients[i][0]) <= ground_threshold_) &&
-        (fabs(1.0 + plane_coefficients[i][1]) <= ground_threshold_) &&
-        (fabs(0.0 - plane_coefficients[i][2]) <= ground_threshold_))
+    if ((fabs( plane_transformed[0] + plane_transformed[1] + plane_transformed[3]) < 0.5) 
+         && (angle<70 || angle >110))
     {
       ground_plane = plane_coefficients[i];
       break;
@@ -315,7 +260,6 @@ void FetchDepthLayer::depthImageCallback(
     ROS_DEBUG_NAMED("depth_layer", "Invalid ground plane.");
     return;
   }
-
  
   cv::split(points3d, channels);
 
@@ -332,18 +276,17 @@ void FetchDepthLayer::depthImageCallback(
   int skip = 10;  // TODO should be ROS param
 
   // Put points in clearing/marking clouds
-  for (size_t i = skip; i < points3d.rows-skip; i++)
+
+  for (size_t i=skip; i<points3d.rows-skip; i++)
   {
-    for (size_t j = 2*skip; j < points3d.cols - 2*skip; j++)
+    for (size_t j=skip; j<points3d.cols-skip; j++)
     {
       // Get next point
       geometry_msgs::Point32 current_point;
       current_point.x = channels[0].at<float>(i, j);
       current_point.y = channels[1].at<float>(i, j);
       current_point.z = channels[2].at<float>(i, j);
-
       // Check point validity
-
       if (current_point.x != 0.0 &&
           current_point.y != 0.0 &&
           current_point.z != 0.0 &&
@@ -351,28 +294,18 @@ void FetchDepthLayer::depthImageCallback(
           !isnan(current_point.y) &&
           !isnan(current_point.z))
       {
-        double threshold_;
-        if (i<25 || j<25 || i>95 || j>135)
-        {
-          threshold_ = observations_threshold_ + 0.01;
-        }
-        else
-        {
-          threshold_ = observations_threshold_;
-        }
-
         // Check if point is part of the ground plane
         if (fabs(ground_plane[0] * current_point.x +
                  ground_plane[1] * current_point.y +
                  ground_plane[2] * current_point.z +
-                 ground_plane[3]) <= threshold_)
+                 ground_plane[3]) <= observations_threshold_)
         {
           clearing_points.points.push_back(current_point);
         }
         else
         {
           // Not inlier, should it be outlier?
-          int num_valid = 0, num_outliers = 0;
+          int num_valid = 0;
           for (int x=-1; x < 2; x++)
           {
             for (int y=-1; y < 2; y++)
@@ -395,18 +328,11 @@ void FetchDepthLayer::depthImageCallback(
                      fabs(test_point.z - current_point.z) < 0.1)
                 {
                   num_valid++;
-                  if ((fabs(ground_plane[0] * test_point.x +
-                            ground_plane[1] * test_point.y +
-                            ground_plane[2] * test_point.z +
-                            ground_plane[3]) > threshold_))
-                  {
-                    num_outliers++;
-                  }
                 }
               }
             }  // for y
           }  // for x
-          if (num_valid >= 7 && num_outliers >= 7)
+          if (num_valid >= 7)
           {
             marking_points.points.push_back(current_point);
           }
