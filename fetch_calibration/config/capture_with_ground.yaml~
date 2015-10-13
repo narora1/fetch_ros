@@ -55,9 +55,3 @@ features:
     camera_sensor_name: camera
     chain_sensor_name: ground
     ground_frame: base_link
-  gripper_depth_finder:
-    type: robot_calibration/LedFinder
-    topic: /head_camera/depth/image
-    camera_sensor_name: camera
-    chain_sensor_name: gripper
-    max_iterations: 25
