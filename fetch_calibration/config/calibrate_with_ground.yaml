@@ -62,7 +62,7 @@ error_blocks:
    rotation_scale: 0.1
  - name: gripper_depth
    type: camera3d_to_gripper
-   camera: camera
-   gripper: gripper
+   camera: camera3d
+   gripper: arm
 
 

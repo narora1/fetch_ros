@@ -62,5 +62,4 @@ error_blocks:
  - name: gripper_depth
    type: camera3d_to_gripper
    camera: cameradepth
-   gripper: arm 
-
+   gripper: arm
