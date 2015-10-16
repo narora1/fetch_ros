@@ -8,6 +8,9 @@ models:
    type: camera3d
    frame: head_camera_rgb_optical_frame
    topic: /head_camera/depth_registered/points
+ - name: cameradepth
+   type: camera3d
+   frame: head_camera_depth_optical_frame
 free_params:
  - shoulder_pan_joint
  - shoulder_lift_joint
@@ -58,6 +61,6 @@ error_blocks:
    rotation_scale: 0.1
  - name: gripper_depth
    type: camera3d_to_gripper
-   camera: camera
-   gripper: gripper
+   camera: cameradepth
+   gripper: arm 
 

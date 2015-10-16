@@ -2,7 +2,7 @@
 
   <node pkg="robot_calibration" type="calibrate" name="calibrate"
         args="--from-bag /tmp/fetch_calibration/calibration_data.bag"
-        output="screen" required="true">
+        output="screen" required="true" launch-prefix="gdb -ex run --args">
     <rosparam file="$(find fetch_calibration)/config/calibrate.yaml" command="load" />
   </node>
   
