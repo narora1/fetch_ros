@@ -54,4 +54,10 @@ features:
     camera_sensor_name: cameradepth
     chain_sensor_name: arm
     max_iterations: 25
+  gripper_color_finder:
+    type: robot_calibration/GripperColorFinder
+    topic: /head_camera/rgb/image
+    camera_sensor_name: camerargb
+    chain_sensor_name: arm
+    max_iterations: 25
 
