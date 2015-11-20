@@ -67,7 +67,7 @@ features:
     topic: /head_camera/rgb/image_raw
     camera_sensor_name: camerargb
     chain_sensor_name: arm
-    threshold: 500
+    threshold: 300
     max_iterations: 25
     gripper_led_frame: wrist_roll_link
     poses:

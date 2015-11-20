@@ -22,18 +22,7 @@ free_params:
  - forearm_roll_joint
  - wrist_flex_joint
  - wrist_roll_joint
- - camera_fx
- - camera_fy
- - camera_cx
- - camera_cy
- - camera_z_offset
- - camera_z_scaling
- - cameradepth_fx
- - cameradepth_fy
- - cameradepth_cx
- - cameradepth_cy
- - cameradepth_z_offset
- - cameradepth_z_scaling
+ - head_tilt_joint
  - camerargb_fx
  - camerargb_fy
  - camerargb_cx
@@ -48,13 +37,6 @@ free_frames:
    roll: true
    pitch: true
    yaw: true
- - name: head_camera_depth_joint
-   x: true
-   y: true
-   z: true
-   roll: true
-   pitch: true
-   yaw: true
  - name: checkerboard
    x: true
    y: false
@@ -62,6 +44,13 @@ free_frames:
    roll: false
    pitch: true
    yaw: false
+ - name: head_pan_joint
+   x: true
+   y: true
+   z: true
+   roll: true
+   pitch: true
+   yaw: true
 error_blocks:
  - name: hand_eye
    type: camera3d_to_arm
