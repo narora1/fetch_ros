@@ -23,14 +23,33 @@ free_params:
  - wrist_flex_joint
  - wrist_roll_joint
  - head_tilt_joint
+ - camera_fx
+ - camera_fy
+ - camera_cx
+ - camera_cy
+ - camera_z_offset
+ - camera_z_scaling
  - camerargb_fx
  - camerargb_fy
  - camerargb_cx
  - camerargb_cy
  - camerargb_z_offset
  - camerargb_z_scaling
+ - cameradepth_fx
+ - cameradepth_fy
+ - cameradepth_cx
+ - cameradepth_cy
+ - cameradepth_z_offset
+ - cameradepth_z_scaling
 free_frames:
  - name: head_camera_rgb_joint
+   x: true
+   y: true
+   z: true
+   roll: true
+#   pitch: true
+   yaw: true
+ - name: head_camera_depth_joint
    x: true
    y: true
    z: true
@@ -66,7 +85,7 @@ error_blocks:
    type: camera3d_to_gripper
    camera: cameradepth
    gripper: arm
- - name: gripper_depth
+ - name: gripper_color
    type: camera3d_to_led
    camera: camerargb
    gripper: arm
