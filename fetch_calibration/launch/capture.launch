@@ -10,7 +10,7 @@
         args="$(find fetch_calibration)/config/output_led.bag"
         output="screen" required="true" launch-prefix="gdb -ex run --args" >
     <param name="velocity_factor" value="$(arg velocity_factor)" />
-    <rosparam file="$(find fetch_calibration)/config/capture_with_ground.yaml" command="load" />
+    <rosparam file="$(find fetch_calibration)/config/capture.yaml" command="load" />
     <rosparam file="$(find fetch_calibration)/config/calibrate.yaml" command="load" />
   </node>
 

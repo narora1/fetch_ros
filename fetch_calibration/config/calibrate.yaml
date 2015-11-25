@@ -8,12 +8,22 @@ models:
    type: camera3d
    frame: head_camera_rgb_optical_frame
    topic: /head_camera/depth_registered/points
+ - name: cameraground
+   type: camera3d
+   frame: head_camera_rgb_optical_frame
+   topic: /head_camera/depth_registered/points
  - name: cameradepth
    type: camera3d
    frame: head_camera_depth_optical_frame
  - name: camerargb
    type: camera2d
    frame: head_camera_rgb_optical_frame   
+ - name: gripperrgb
+   type: chain
+   frame: wrist_roll_link
+ - name: gripperdepth
+   type: chain
+   frame: wrist_roll_link
 free_params:
  - shoulder_pan_joint
  - shoulder_lift_joint
@@ -84,9 +94,9 @@ error_blocks:
  - name: gripper_depth
    type: camera3d_to_gripper
    camera: cameradepth
-   gripper: arm
+   gripper: gripperdepth
  - name: gripper_color
    type: camera3d_to_led
    camera: camerargb
-   gripper: arm
+   gripper: gripperrgb 
 

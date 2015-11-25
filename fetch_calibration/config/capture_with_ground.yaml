@@ -52,21 +52,21 @@ features:
   ground_plane_finder:
     type: robot_calibration/GroundPlaneFinder
     topic: /head_camera/depth_registered/points
-    camera_sensor_name: camera
+    camera_sensor_name: cameraground
     chain_sensor_name: ground
     ground_frame: base_link
   gripper_depth_finder:
     type: robot_calibration/GripperDepthFinder
     topic: /head_camera/depth/image
-    camera_sensor_name: camera
-    chain_sensor_name: gripper
+    camera_sensor_name: cameradepth
+    chain_sensor_name: gripperdepth
     max_iterations: 25
   gripper_color_finder:
     type: robot_calibration/GripperColorFinder
     action: /gripper_controller/led_action
     topic: /head_camera/rgb/image_raw
     camera_sensor_name: camerargb
-    chain_sensor_name: arm
+    chain_sensor_name: gripperrgb
     threshold: 300
     max_iterations: 25
     gripper_led_frame: wrist_roll_link
