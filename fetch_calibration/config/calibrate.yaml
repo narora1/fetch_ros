@@ -18,12 +18,23 @@ models:
  - name: camerargb
    type: camera2d
    frame: head_camera_rgb_optical_frame   
- - name: gripperrgb
-   type: chain
-   frame: wrist_roll_link
  - name: gripperdepth
    type: chain
    frame: wrist_roll_link
+ - name: head
+   type: chain
+   frame: head_camera_rgb_optical_frame
+ - name: gripperrgb
+   type: multichain
+   chains: 
+    - name: arm
+      type: chain
+      frame: wrist_roll_link
+      inv: false
+    - name: head
+      type: chain
+      frame: head_camera_rgb_optical_frame
+      inv: true    
 free_params:
  - shoulder_pan_joint
  - shoulder_lift_joint
