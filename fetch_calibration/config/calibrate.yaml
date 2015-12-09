@@ -18,23 +18,24 @@ models:
  - name: camerargb
    type: camera2d
    frame: head_camera_rgb_optical_frame   
- - name: gripperdepth
-   type: chain
-   frame: wrist_roll_link
- - name: head
-   type: chain
-   frame: head_camera_rgb_optical_frame
- - name: gripperrgb
-   type: multichain
-   chains: 
-    - name: arm
-      type: chain
-      frame: wrist_roll_link
-      inv: false
-    - name: head
-      type: chain
-      frame: head_camera_rgb_optical_frame
-      inv: true    
+# - name: gripperdepth
+#   type: chain
+#   frame: wrist_roll_link
+# - name: head
+#   type: chain
+#   frame: head_camera_rgb_optical_frame
+# - name: gripperrgb
+#   type: chain
+#   frame : wrist_roll_link
+ #  chains: 
+ #   - name: arm
+ #     type: chain
+ #     frame: wrist_roll_link
+ #     inv: false
+ #   - name: head
+ #     type: chain
+ #     frame: head_camera_rgb_optical_frame
+ #     inv: true    
 free_params:
  - shoulder_pan_joint
  - shoulder_lift_joint
@@ -50,12 +51,12 @@ free_params:
  - camera_cy
  - camera_z_offset
  - camera_z_scaling
- - camerargb_fx
- - camerargb_fy
- - camerargb_cx
- - camerargb_cy
- - camerargb_z_offset
- - camerargb_z_scaling
+   # - camerargb_fx
+   # - camerargb_fy
+   # - camerargb_cx
+   # - camerargb_cy
+   # - camerargb_z_offset
+   # - camerargb_z_scaling
  - cameradepth_fx
  - cameradepth_fy
  - cameradepth_cx
@@ -68,7 +69,7 @@ free_frames:
    y: true
    z: true
    roll: true
-#   pitch: true
+   pitch: true
    yaw: true
  - name: head_camera_depth_joint
    x: true
