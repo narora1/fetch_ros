@@ -18,24 +18,12 @@ models:
  - name: camerargb
    type: camera2d
    frame: head_camera_rgb_optical_frame   
+ - name: gripperrgb
+   type: chain
+   frame: wrist_roll_link
  - name: gripperdepth
    type: chain
    frame: wrist_roll_link
-# - name: head
-#   type: chain
-#   frame: head_camera_rgb_optical_frame
- - name: gripperrgb
-   type: multichain
-   frame : wrist_roll_link
-   chains: 
-    - name: gripperarm
-      type: chain
-      frame: wrist_roll_link
-      inv: false
-    - name: gripperhead
-      type: chain
-      frame: head_camera_rgb_optical_frame
-      inv: true    
 free_params:
  - shoulder_pan_joint
  - shoulder_lift_joint
@@ -69,7 +57,7 @@ free_frames:
    y: true
    z: true
    roll: true
-   pitch: true
+#   pitch: true
    yaw: true
  - name: head_camera_depth_joint
    x: true
@@ -110,5 +98,4 @@ error_blocks:
  - name: gripper_color
    type: camera3d_to_led
    camera: camerargb
-   gripper: gripperrgb 
-
+   gripper: gripperrgb
