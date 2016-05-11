@@ -1,0 +1,21 @@
+verbose: true
+base_link: base_link
+models:
+ - name: base_camera
+   type: camera3d
+   frame: base_camera_link
+free_params:
+ - base_camera_joint
+free_frames:
+ - name: head_camera_rgb_joint
+   x: false
+   y: false
+   z: true
+   roll: false
+   pitch: true
+   yaw: false
+error_blocks:
+ - name: freight_ground
+   type: basecamera_to_ground
+   camera: camera
+
