@@ -6,7 +6,7 @@
   <node pkg="freight_calibration" type="camera_reconfigure.py" name="camera_reconfigure" args="--disable" />
 
   <node pkg="robot_calibration" type="calibrate" name="robot_calibration"
-        args="$(find freight_calibration)/config/calibration_poses.bag"
+        args="$(find freight_calibration)/config/output_pmd.bag"
         output="screen" required="true">
     <param name="velocity_factor" value="$(arg velocity_factor)" />
     <rosparam file="$(find freight_calibration)/config/capture.yaml" command="load" />
