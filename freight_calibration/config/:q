@@ -1,0 +1,15 @@
+verbose: true
+base_link: base_link
+models:
+ - name: camera
+   type: camera3d
+   frame: base_camera_optical_link
+   topic: /base_camera/depth_downsample/points
+free_params:
+ - base_camera_joint
+error_blocks:
+ - name: freight_ground
+   type: basecamera_to_ground
+   camera: camera
+   ground: ground
+

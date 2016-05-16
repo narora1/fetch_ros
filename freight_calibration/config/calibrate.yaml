@@ -3,11 +3,10 @@ base_link: base_link
 models:
  - name: camera
    type: camera3d
-   frame: base_camera_link
-free_params:
- - base_camera_joint
+   frame: base_camera_optical_frame
+   topic: /base_camera/depth_downsample/points
 free_frames:
- - name: head_camera_rgb_joint
+ - name: base_camera_optical_joint
    x: false
    y: false
    z: true
@@ -19,4 +18,9 @@ error_blocks:
    type: basecamera_to_ground
    camera: camera
    ground: ground
-
+ - name: restrict_camera
+   type: outrageous
+   param: base_camera_joint
+   joint_scale: 0.0
+   position_scale: 0.1
+   rotation_scale: 0.1

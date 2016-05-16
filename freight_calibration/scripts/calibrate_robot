@@ -72,7 +72,6 @@ def update_robot_launch(launch, calibration, install_dir):
 
         except KeyError:
             pass
-`
     launch_xml.write("/tmp/robot.launch")
     copy_file("/tmp/robot.launch", os.path.join(install_dir, "robot.launch"))
 
@@ -92,18 +91,18 @@ def get_calibration_dict(directory, calibration = None):
         print("Cannot parse calibration.yaml")
         return calibration
     # Get dictionary data
-    try:
-        calibration["base_camera/depth_downsample/z_offset_mm"] = "0"
+    #try:
+    #    calibration["base_camera/depth_downsample/z_offset_mm"] = "0"
 
     # str(int(calyaml["camera_z_offset"]*1000.0))
 
-    except KeyError:
-        calibration["base_camera/depth_downsample/z_offset_mm"] = "0"
-    try:
-        calibration["base_camera/depth_downsample/z_scaling"] = "1.0"
+    #except KeyError:
+    #    calibration["base_camera/depth_downsample/z_offset_mm"] = "0"
+    #try:
+    #    calibration["base_camera/depth_downsample/z_scaling"] = "1.0"
     # str(1.0 + calyaml["camera_z_scaling"])
-    except KeyError:
-        calibration["base_camera/depth_downsample/z_scaling"] = "1.0"
+    #except KeyError:
+    #    calibration["base_camera/depth_downsample/z_scaling"] = "1.0"
     calibration["depth_camera_info_url"] = calyaml["depth_info"]
     calibration["rgb_camera_info_url"] = calyaml["rgb_info"]
     calibration["robot_description"] = calyaml["urdf"]
