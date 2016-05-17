@@ -36,9 +36,6 @@ def restart_drivers(rosdistro):
     return (ok and start_drivers(rosdistro))
 
 def copy_file(current, new):
-    print("in copy file")
-    print(current)
-    print(new)
     if new.startswith("/etc"):
         return (subprocess.call(["sudo", "cp", current, new]) == 0)
     else:
@@ -82,19 +79,9 @@ def get_calibration_dict(directory, calibration = None):
     if calibration == None:
         calibration = dict()
     # Load file
-#    try:
-#        calfile = open(os.path.join(directory, "calibration.yaml"))
-#    except IOError:
-#        print(directory)
-#        print("Cannot open calibration.yaml")
-#        return calibration
     try:
-        # Get name of latest file
-        files = [f for f in os.listdir(directory) if f.startswith("calibration_") and f.endswith(".yaml")]
-        files.sort()
-        # Open it
-        calfile = open(os.path.join(directory, files[-1]))
-    except IndexError, IOError:
+        calfile = open(os.path.join(directory, "calibration.yaml"))
+    except IOError:
         print("Cannot open calibration.yaml")
         return calibration
     # Parse YAML
@@ -143,7 +130,6 @@ def get_base_calibration_dict(directory, calibration = None):
 
 def move_calibration(current_directory, new_directory, rosdistro):
     calibration = get_calibration_dict(current_directory)
-    print( current_directory)
     calibration = get_base_calibration_dict(current_directory, calibration)
 
     # install urdf, depth, rgb files
@@ -152,8 +138,6 @@ def move_calibration(current_directory, new_directory, rosdistro):
             copy_file(os.path.join(current_directory, calibration[name]),
                       os.path.join(new_directory, calibration[name]))
         except:
-            print(current_directory)
-	    print(new_directory)            
             print("Unable to copy %s" % name)
 
     # update the robot.launch
@@ -225,7 +209,6 @@ if __name__ == "__main__":
     if args.install or args.arm or args.base:
         move_calibration(args.directory, "/etc/ros/%s" % rosdistro, rosdistro)
         restart = True
-        print("here")
 
     if restart:
         print("Restarting drivers so that calibration will take effect...")
