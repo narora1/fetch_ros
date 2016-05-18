@@ -6,13 +6,13 @@ models:
    frame: base_camera_optical_frame
    topic: /base_camera/depth_downsample/points
 free_frames:
- - name: base_camera_joint
+ - name: base_camera_optical_joint
    x: false
    y: false
    z: false
    roll: true
-   pitch: true
-   yaw: true
+   pitch: false
+   yaw: false
 error_blocks:
  - name: freight_ground
    type: basecamera_to_ground
