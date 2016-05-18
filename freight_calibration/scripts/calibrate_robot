@@ -82,12 +82,6 @@ def get_calibration_dict(directory, calibration = None):
     if calibration == None:
         calibration = dict()
     # Load file
-#    try:
-#        calfile = open(os.path.join(directory, "calibration.yaml"))
-#    except IOError:
-#        print(directory)
-#        print("Cannot open calibration.yaml")
-#        return calibration
     try:
         # Get name of latest file
         files = [f for f in os.listdir(directory) if f.startswith("calibration_") and f.endswith(".yaml")]
@@ -104,18 +98,6 @@ def get_calibration_dict(directory, calibration = None):
         print("Cannot parse calibration.yaml")
         return calibration
     # Get dictionary data
-    #try:
-    #    calibration["base_camera/depth_downsample/z_offset_mm"] = "0"
-
-    # str(int(calyaml["camera_z_offset"]*1000.0))
-
-    #except KeyError:
-    #    calibration["base_camera/depth_downsample/z_offset_mm"] = "0"
-    #try:
-    #    calibration["base_camera/depth_downsample/z_scaling"] = "1.0"
-    # str(1.0 + calyaml["camera_z_scaling"])
-    #except KeyError:
-    #    calibration["base_camera/depth_downsample/z_scaling"] = "1.0"
     calibration["depth_camera_info_url"] = calyaml["depth_info"]
     calibration["rgb_camera_info_url"] = calyaml["rgb_info"]
     calibration["robot_description"] = calyaml["urdf"]
@@ -195,7 +177,7 @@ if __name__ == "__main__":
         restart = True
 
     if args.reset:
-        # Can we get to fetch_bringup?
+        # Can we get to freight_bringup?
         try:
             rp = rospkg.RosPack()
             bringup = rp.get_path("freight_bringup")

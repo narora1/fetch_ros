@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Author: Michael Ferguson
-
 import sys
 import rospy
 import dynamic_reconfigure.client
@@ -26,12 +24,6 @@ class CameraReconfigure(object):
         self.client = dynamic_reconfigure.client.Client("base_camera/depth_downsample",
                                                         timeout=30,
                                                         config_callback=self.callback)
-     
-    #def disable_auto(self):
-       #self.client.update_configuration({"automatic_exposure": False})
-
-    #def enable_auto(self):
-       # self.client.update_configuration({"automatic_exposure": True})
     
     def callback(self, config):
         rospy.loginfo("camera configured")
@@ -44,9 +36,4 @@ if __name__ == "__main__":
     rospy.init_node("camera_reconfigure")
     reconfigure = CameraReconfigure()
    
-    #if sys.argv[1] == "--enable":
-       #reconfigure.enable_auto()
-    #else:
-       #reconfigure.disable_auto()
-    
     rospy.sleep(1)
