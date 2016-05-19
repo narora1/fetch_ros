@@ -1,7 +1,8 @@
 chains:
   - name: arm
-    topic: /arm_controller/follow_joint_trajectory
+    topic: /arm_with_torso_controller/follow_joint_trajectory 
     joints:
+     - torso_lift_joint
      - shoulder_pan_joint
      - shoulder_lift_joint
      - upperarm_roll_joint
@@ -9,7 +10,7 @@ chains:
      - forearm_roll_joint
      - wrist_flex_joint
      - wrist_roll_joint
-    planning_group: arm
+    planning_group: arm_with_torso
   - name: head
     topic: /head_controller/follow_joint_trajectory
     joints:
@@ -51,8 +52,6 @@ features:
   ground_plane_finder:
     type: robot_calibration/GroundPlaneFinder
     topic: /head_camera/depth_registered/points
+    camera_sensor_name: camera
+    chain_sensor_name: ground
     ground_frame: base_link
-  checkerboard_finder:
-    type: robot_calibration/CheckerboardFinder
-    topic: /head_camera/depth_registered/points
-    checker_frame: checkerboard

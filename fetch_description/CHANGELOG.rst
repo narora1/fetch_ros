@@ -2,6 +2,39 @@
 Changelog for package fetch_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2016-05-08)
+------------------
+
+0.7.4 (2016-03-16)
+------------------
+
+0.7.3 (2016-03-05)
+------------------
+
+0.7.2 (2016-02-24)
+------------------
+
+0.7.1 (2016-01-20)
+------------------
+* update torso throw to match rev2 hardware
+* make laser actually level
+* update gripper model
+* Contributors: Michael Ferguson
+
+0.7.0 (2015-09-29)
+------------------
+* update limits of wrist flex
+* remove duplicated inertia entries, fixes `#14 <https://github.com/fetchrobotics/fetch_ros/issues/14>`_
+* Contributors: Michael Ferguson
+
+0.6.2 (2015-07-30)
+------------------
+
+0.6.1 (2015-07-03)
+------------------
+* specify a license
+* Contributors: Michael Ferguson
+
 0.6.0 (2015-06-23)
 ------------------
 

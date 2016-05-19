@@ -1,33 +1,45 @@
 /*
- * Copyright 2015 Fetch Robotics Inc.
- * All Rights Reserved.
+ * Copyright (c) 2015, Fetch Robotics Inc.
+ * All rights reserved.
  *
- * THIS WORK, IN SOURCE OR BINARY FORMAT IS PROVIDED UNDER THE TERMS
- * OF THE CREATIVE COMMONS ATTRIBUTION-NONCOMMERCIAL-NODERIVATIVES
- * 4.0 INTERNATIONAL LICENSE. A FULL COPY OF THE LICENSE CAN BE FOUND
- * AT https://creativecommons.org/licenses/by-nc-nd/4.0/
-
- * THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER APPLICABLE LAW.
- * ANY USE OF THE WORK OTHER THAN AS AUTHORIZED UNDER THIS LICENSE
- * OR COPYRIGHT LAW IS PROHIBITED.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * BY EXERCISING ANY RIGHTS TO THE WORK PROVIDED HERE, YOU ACCEPT AND AGREE TO
- * BE BOUND BY THE TERMS OF THIS LICENSE. THE LICENSOR GRANTS YOU THE RIGHTS
- * CONTAINED HERE IN CONSIDERATION OF YOUR ACCEPTANCE OF SUCH TERMS AND
- * CONDITIONS.
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the Fetch Robotics Inc. nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
  *
- * Author: Anuj Pasricha, Michael Ferguson
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL FETCH ROBOTICS INC. BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+// Author: Anuj Pasricha, Michael Ferguson
 
 #ifndef FETCH_DEPTH_LAYER_DEPTH_LAYER_H
 #define FETCH_DEPTH_LAYER_DEPTH_LAYER_H
 
 #include <boost/thread/mutex.hpp>
+#include <boost/shared_ptr.hpp>
 #include <costmap_2d/voxel_layer.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <opencv2/rgbd/rgbd.hpp>
 #include <sensor_msgs/image_encodings.h>
+#include <tf/message_filter.h>
+#include <message_filters/subscriber.h>
 
 namespace costmap_2d
 {
@@ -63,13 +75,36 @@ private:
   boost::shared_ptr<costmap_2d::ObservationBuffer> marking_buf_;
   boost::shared_ptr<costmap_2d::ObservationBuffer> clearing_buf_;
 
+  // should we publish the marking/clearing observations
   bool publish_observations_;
-  double ground_threshold_;
+
+  // distance away from ground plane at which
+  // something is considered an obstacle
   double observations_threshold_;
+
+  // should we dynamically find the ground plane?
+  bool find_ground_plane_;
+
+  // if finding ground plane, limit the tilt
+  // with respect to base_link frame
+  double ground_threshold_;
+
+  // should NANs be treated as +inf and used for clearing
+  bool clear_nans_;
+
+  // skipping of potentially noisy rays near the edge of the image
+  int skip_rays_bottom_;
+  int skip_rays_top_;
+  int skip_rays_left_;
+  int skip_rays_right_;
+
+  // should skipped edge rays be used for clearing?
+  bool clear_with_skipped_rays_;
 
   // retrieves depth image from head_camera
   // used to fit ground plane to
-  ros::Subscriber depth_image_sub_;
+  boost::shared_ptr< message_filters::Subscriber<sensor_msgs::Image> > depth_image_sub_;
+  boost::shared_ptr< tf::MessageFilter<sensor_msgs::Image> > depth_image_filter_;
 
   // retrieves camera matrix for head_camera
   // used in calculating ground plane

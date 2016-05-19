@@ -2,6 +2,39 @@
 Changelog for package fetch_calibration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2016-05-08)
+------------------
+
+0.7.4 (2016-03-16)
+------------------
+
+0.7.3 (2016-03-05)
+------------------
+
+0.7.2 (2016-02-24)
+------------------
+
+0.7.1 (2016-01-20)
+------------------
+
+0.7.0 (2015-09-29)
+------------------
+* added support for ground plane calibration
+* Contributors: Niharika Arora
+
+0.6.2 (2015-07-30)
+------------------
+* fix parameter delete
+* Contributors: Michael Ferguson
+
+0.6.1 (2015-07-03)
+------------------
+* delete old parameters before reloading
+* use dated temp files to avoid permissions issues, fixes `#9 <https://github.com/fetchrobotics/fetch_ros/issues/9>`_
+* specify camera/chain names
+* add checkboard based calibration config
+* Contributors: Michael Ferguson
+
 0.6.0 (2015-06-23)
 ------------------
 * update capture for new multi_sensor branch of calibration

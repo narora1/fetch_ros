@@ -2,6 +2,37 @@
 Changelog for package fetch_navigation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2016-05-08)
+------------------
+
+0.7.4 (2016-03-16)
+------------------
+
+0.7.3 (2016-03-05)
+------------------
+* Update to new maps
+* Contributors: Aaron Blasdel
+
+0.7.2 (2016-02-24)
+------------------
+* Fix location of recovery behavior parameters in yaml configs
+* Contributors: Kei Okada, Michael Ferguson
+
+0.7.1 (2016-01-20)
+------------------
+
+0.7.0 (2015-09-29)
+------------------
+* Use fetch_maps package for maps
+* Allow overriding of move base & amcl param files
+* Contributors: Aaron Blasdel, Ian Danforth
+
+0.6.2 (2015-07-30)
+------------------
+
+0.6.1 (2015-07-03)
+------------------
+
 0.6.0 (2015-06-23)
 ------------------
 

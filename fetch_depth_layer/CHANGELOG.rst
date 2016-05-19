@@ -2,6 +2,47 @@
 Changelog for package fetch_depth_layer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2016-05-08)
+------------------
+* Fixed activate and deactivate to avoid errors
+* Parameterizing inputs for ObservationBuffer to match parent layers.
+* Contributors: Aaron Hoy, Alex Henning, Michael Ferguson
+
+0.7.4 (2016-03-16)
+------------------
+* activate/deactivate for fetch depth layer
+* Added transform filtering to depth layer depth data callback
+* Contributors: Levon Avagyan
+
+0.7.3 (2016-03-05)
+------------------
+
+0.7.2 (2016-02-24)
+------------------
+* Add option to clear with NANs
+* Add ROS param clear_with_skipped_rays to re-enable clearing with edge rays
+* Add ROS param to control size of skip region on edges
+* Change min_clearing_height to -infinity
+* Change max_clearing_height to +infinity
+* Contributors: Aaron Hoy, Michael Ferguson
+
+0.7.1 (2016-01-20)
+------------------
+* add parameters for topic names
+* add support for static camera based on tf transform
+* Improved local costmap clearing by considering all points for clearance.
+* re-license fetch_depth_layer as BSD
+* Contributors: Marek Fiser, Michael Ferguson
+
+0.7.0 (2015-09-29)
+------------------
+
+0.6.2 (2015-07-30)
+------------------
+
+0.6.1 (2015-07-03)
+------------------
+
 0.6.0 (2015-06-23)
 ------------------
 

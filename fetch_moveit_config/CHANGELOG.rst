@@ -2,6 +2,36 @@
 Changelog for package fetch_moveit_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2016-05-08)
+------------------
+
+0.7.4 (2016-03-16)
+------------------
+
+0.7.3 (2016-03-05)
+------------------
+
+0.7.2 (2016-02-24)
+------------------
+
+0.7.1 (2016-01-20)
+------------------
+
+0.7.0 (2015-09-29)
+------------------
+* fix dependency issue with run/test duplication
+* add missing moveit_python depend
+* fix name of gripper fingers in fake controllers
+* Contributors: Michael Ferguson
+
+0.6.2 (2015-07-30)
+------------------
+
+0.6.1 (2015-07-03)
+------------------
+* add (optional) octomap configuration
+* Contributors: Michael Ferguson
+
 0.6.0 (2015-06-23)
 ------------------
 

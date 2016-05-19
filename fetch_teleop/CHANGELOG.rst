@@ -2,6 +2,38 @@
 Changelog for package fetch_teleop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.7.5 (2016-05-08)
+------------------
+* Control gripper via keyboard
+* Contributors: Kentaro Wada
+
+0.7.4 (2016-03-16)
+------------------
+
+0.7.3 (2016-03-05)
+------------------
+
+0.7.2 (2016-02-24)
+------------------
+
+0.7.1 (2016-01-20)
+------------------
+
+0.7.0 (2015-09-29)
+------------------
+* Require deadman to be held while tucking
+* add missing moveit_python depend
+* Contributors: Alex Henning, Michael Ferguson
+
+0.6.2 (2015-07-30)
+------------------
+
+0.6.1 (2015-07-03)
+------------------
+* make pan/tilt acceleration parameterized
+* update head tilt joint limits in teleop
+* Contributors: Michael Ferguson
+
 0.6.0 (2015-06-23)
 ------------------
 * install tuck_arm.py
