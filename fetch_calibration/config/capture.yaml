@@ -46,11 +46,3 @@ features:
         x: 0.1044
         y: -0.0355
         z: 0.0396
-  ground_plane_finder:
-    type: robot_calibration/GroundPlaneFinder
-    topic: /head_camera/depth_registered/points
-    ground_frame: base_link
-  checkerboard_finder:
-    type: robot_calibration/CheckerboardFinder
-    topic: /head_camera/depth_registered/points
-    checker_frame: checkerboard
