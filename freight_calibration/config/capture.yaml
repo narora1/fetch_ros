@@ -9,3 +9,4 @@ features:
     type: robot_calibration/FreightGroundFinder
     topic: /base_camera/depth_downsample/points
     ground_frame: base_link
+    camera_info: /base_camera/depth_downsample/camera_info
