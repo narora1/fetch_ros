@@ -1,0 +1,12 @@
+chains:
+  - name: base_camera
+    has_controller: false
+    joints:
+     - base_camera_joint
+duration: 2.0
+features:
+  freight_ground_finder:
+    type: robot_calibration/FreightGroundFinder
+    topic: /base_camera/depth_downsample/points
+    ground_frame: base_link
+    camera_info: /base_camera/depth_downsample/camera_info
