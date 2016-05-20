@@ -1,6 +1,5 @@
 chains:
   - name: base_camera
-    has_controller: false
     joints:
      - base_camera_joint
 duration: 2.0
