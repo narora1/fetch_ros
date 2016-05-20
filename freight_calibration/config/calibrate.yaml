@@ -1,7 +1,7 @@
 verbose: true
 base_link: base_link
 models:
- - name: camera
+ - name: cameraground
    type: camera3d
    frame: base_camera_optical_frame
    topic: /base_camera/depth_downsample/points
@@ -15,8 +15,8 @@ free_frames:
    yaw: false
 error_blocks:
  - name: freight_ground
-   type: basecamera_to_ground
-   camera: camera
+   type: camera3d_to_ground
+   camera: cameraground
    ground: ground
  - name: restrict_camera
    type: outrageous

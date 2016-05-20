@@ -3,9 +3,9 @@
   <arg name="velocity_factor" default="1.0" />
 
   <node pkg="robot_calibration" type="calibrate" name="robot_calibration"
-        args="$(find freight_calibration)/config/calibration_poses.bag"
+        args="$(find freight_calibration)/config/output_pmd.bag"
         output="screen" required="true">
-    <remap from="/robot_calibration/features/freight_ground_finder/camera_info" to="/base_camera/depth_downsample/camera_info" />
+    <remap from="/robot_calibration/features/ground_plane_finder/camera_info" to="/base_camera/depth_downsample/camera_info" />
     <param name="velocity_factor" value="$(arg velocity_factor)" />
     <rosparam file="$(find freight_calibration)/config/capture.yaml" command="load" />
     <rosparam file="$(find freight_calibration)/config/calibrate.yaml" command="load" />

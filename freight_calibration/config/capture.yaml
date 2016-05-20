@@ -5,8 +5,10 @@ chains:
      - base_camera_joint
 duration: 2.0
 features:
-  freight_ground_finder:
-    type: robot_calibration/FreightGroundFinder
+  ground_plane_finder:
+    type: robot_calibration/GroundPlaneFinder
     topic: /base_camera/depth_downsample/points
     ground_frame: base_link
     camera_info: /base_camera/depth_downsample/camera_info
+    points_max: 60
+    max_z: 1.8
