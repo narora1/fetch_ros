@@ -1,0 +1,51 @@
+verbose: true
+base_link: base_link
+models:
+ - name: arm
+   type: chain
+   frame: wrist_roll_link
+ - name: camera
+   type: camera3d
+   frame: camera_rgb_optical_frame
+   topic: /camera/depth_registered/points
+ - name: head
+   type: chain
+   frame: camera_link
+free_params:
+ - shoulder_pan_joint
+ - shoulder_lift_joint
+ - upperarm_roll_joint
+ - elbow_flex_joint
+ - forearm_roll_joint
+ - wrist_flex_joint
+ - wrist_roll_joint
+ - camera_fx
+ - camera_fy
+ - camera_cx
+ - camera_cy
+ - camera_z_offset
+ - camera_z_scaling
+free_frames:
+ - name: stand_alone_base_joint
+   x: false
+   y: false
+   z: false
+ - name: camera_rgb_joint
+   x: true
+   y: true
+   z: true
+   roll: true
+   pitch: true
+   yaw: true
+error_blocks:
+ - name: hand_eye
+   type: camera3d_to_arm
+   camera: camera
+   arm: arm
+ - name: restrict_camera
+   type: outrageous
+   param: camera_joint
+   joint_scale: 0.0
+   position_scale: 0.1
+   rotation_scale: 0.1
+

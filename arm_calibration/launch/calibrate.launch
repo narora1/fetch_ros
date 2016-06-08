@@ -1,0 +1,9 @@
+<launch>
+
+  <node pkg="robot_calibration" type="calibrate" name="calibrate" launch-prefix="gdb -ex run --args"
+        args="--from-bag /tmp/arm_calibration/calibration_data.bag"
+        output="screen" required="true">
+    <rosparam file="$(find arm_calibration)/config/calibrate.yaml" command="load" />
+  </node>
+  
+</launch>
