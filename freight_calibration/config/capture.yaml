@@ -8,6 +8,6 @@ features:
     type: robot_calibration/GroundPlaneFinder
     topic: /base_camera/depth_downsample/points
     ground_frame: base_link
-    camerainfo: /base_camera/depth_downsample/camera_info
+    camera_info: /base_camera/depth_downsample/camera_info
     points_max: 60
     max_z: 1.8
