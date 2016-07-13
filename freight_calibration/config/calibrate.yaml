@@ -9,7 +9,7 @@ free_frames:
  - name: base_camera_joint
    x: false
    y: false
-   z: false
+   z: true
    roll: true
    pitch: false
    yaw: false
